@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+    }
+    .imgz {
+      height: 50px;
+      width: 50px;
+      border: 2px solid yellow;
+      margin: 10px;
+      border-radius: 30px;
+      padding: 10px;
+      
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #choose, #win, #winner {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .popup.show {
+      display: block;
+      opacity: 1;
+    }
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rock Paper Scissors</h1>
+
+  <img class="imgz" src="img/rock-paper-scissors-icon-24.jpg" onclick="playRound('ROCK')"><span>Rock</span></img>
+  <img class="imgz" src="img/paper.jpg" onclick="playRound('PAPER')"><span>Paper</span></img>
+  <img class="imgz" src="img/scissors-icon-22.jpg" onclick="playRound('SCISSORS')"><span>Scissors</span></img>
+  <div>
+    <button onclick="resetGame()">Reset</button>
+  </div>
+
+
+  <!-- choose div -->
+  <div id="choose"></div>
+  <!-- win div -->
+  <div style="background-color: antiquewhite; " id="win"></div>
+  <!-- scoreDisplay div -->
+  <div id="scoreDisplay">
+    <p>Player Score: <span id="playerScore">0</span></p>
+    <p>Computer Score: <span id="computerScore">0</span></p>
+    <p style="background-color: rgba(203, 230, 176, 0.53);" id="winner"></p>
+  </div>
+
+  <div class="popup" id="adPopup">
+    <span class="close" onclick="closePopup()">×</span>
+    <h2>Advertisement</h2>
+    <p>This popup is brought to you by Tawheed.</p>
+  </div>
+
+  <script>
+    let choose = document.getElementById('choose');
+    let win = document.getElementById('win');
+    let winner = document.getElementById('winner');
+    let playerScoreDisplay = document.getElementById('playerScore');
+    let computerScoreDisplay = document.getElementById('computerScore');
+    let adPopup = document.getElementById('adPopup');
+
+    let scoreplayer = localStorage.getItem('playerScore') ? parseInt(localStorage.getItem('playerScore')) : 0;
+    let scorecomputer = localStorage.getItem('computerScore') ? parseInt(localStorage.getItem('computerScore')) : 0;
+
+    updateScoreDisplay();
+
+    function updateScoreDisplay() {
+      playerScoreDisplay.innerText = scoreplayer;
+      computerScoreDisplay.innerText = scorecomputer;
+      if (scorecomputer > scoreplayer) { 
+        winner.innerText = `Computer is winning!!`;
+   
+      } else if (scorecomputer === scoreplayer) {
+        winner.innerText = `It's a tie!`;
+      } else {
+        winner.innerText = `Player is winning!!!`;
+      }
+    }
+    
+    function playRound(playerSelection) {
+      const choices = ['ROCK', 'PAPER', 'SCISSORS'];
+      const computerSelection = choices[Math.floor(Math.random() * choices.length)];
+      console.log(`Player chooses: ${playerSelection}`);
+      console.log(`Computer chooses: ${computerSelection}`);
+      
+      // images for move
+      let playerImg;
+  let computerImg;
+
+  // Associate player's selection with image
+  if (playerSelection === 'ROCK') {
+    playerImg = `<img class="imgz" src="img/rock-paper-scissors-icon-24.jpg" alt="ROCK"><span>Rock</span>`;
+  } else if (playerSelection === 'PAPER') {
+    playerImg = `<img class="imgz" src="img/paper.jpg" alt="PAPER"><span>Paper</span>`;
+  } else if (playerSelection === 'SCISSORS') {
+    playerImg = `<img class="imgz" src="img/scissors-icon-22.jpg" alt="SCISSORS"><span>Scissors</span>`;
+  }
+
+  // Associate computer's selection with image
+  if (computerSelection === 'ROCK') {
+    computerImg = `<img class="imgz" src="img/rock-paper-scissors-icon-24.jpg" alt="ROCK"><span>Rock</span>`;
+  } else if (computerSelection === 'PAPER') {
+    computerImg = `<img class="imgz" src="img/paper.jpg" alt="PAPER"><span>Paper</span>`;
+  } else if (computerSelection === 'SCISSORS') {
+    computerImg = `<img class="imgz" src="img/scissors-icon-22.jpg" alt="SCISSORS"><span>Scissors</span>`;
+  }
+
+  // Display player and computer selections with their respective images
+  choose.innerHTML = `Computer chooses: ${computerImg}<br>Player chooses: ${playerImg}`;
+
+
+      if (playerSelection === computerSelection) {
+        console.log("It's a tie!");
+        win.innerText = "It's a tie";
+      } else if (
+        (playerSelection === 'ROCK' && computerSelection === 'SCISSORS') ||
+        (playerSelection === 'PAPER' && computerSelection === 'ROCK') ||
+        (playerSelection === 'SCISSORS' && computerSelection === 'PAPER')
+      ) {
+        scoreplayer++;
+        console.log(`Player wins!\nPlayer score: ${scoreplayer}  Computer score: ${scorecomputer}`);
+        win.innerText = `Player wins!!`;
+      } else {
+        scorecomputer++; 
+        console.log(`Computer wins!\nComputer score: ${scorecomputer}  Player score: ${scoreplayer}`);
+        win.innerText = `Computer wins!!`;
+      }
+
+      updateScoreDisplay();
+      saveScoresToLocalStorage();
+    }
+
+    function resetGame() {
+      scorecomputer = 0;
+      scoreplayer = 0;
+      updateScoreDisplay();
+      saveScoresToLocalStorage();
+      console.log(`Game has been reset!\nComputer score: ${scorecomputer}  Player score: ${scoreplayer}` );
+    }
+
+    function saveScoresToLocalStorage() {
+      localStorage.setItem('playerScore', scoreplayer);
+      localStorage.setItem('computerScore', scorecomputer);
+    }
+
+    function closePopup() {
+      adPopup.classList.remove('show');
+    }
+
+    setTimeout(function() {
+      adPopup.classList.add('show');
+    }, 3000);
+  </script>
+</body>
+</html>
